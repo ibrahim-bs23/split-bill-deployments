@@ -36,9 +36,9 @@ spec:
                 - name: project
                   value: "splitbill"
                 - name: namespace
-                  value: "alpha-splitbill"
-                - name: image-tag
                   value: "splitbill"
+                - name: image-tag
+                  value: "alpha"
                 - name: source-repo-host
                   value: "https://github.com"
                 - name: source-repo-org
