@@ -5,14 +5,14 @@ kind: Deployment
 image:
   repository: harbor.local.fintech23.xyz/splitbill/split-bill-user-service
   pullPolicy: Always
-  tag: "qa"
+  tag: "alpha"
 
 imagePullSecrets:
   - harbor-local-fintech23-xyz-image-pull-secrets
 
 config:
   HOSTNAME: "split-bill-user-service"
-  DISCOVERY_SERVER_URI: "http://bs23-ib-rt-discovery-service-statefulset-0.bs23-ib-rt-discovery-service-hl-service:8761/eureka/,http://bs23-ib-rt-discovery-service-statefulset-1.bs23-ib-rt-discovery-service-hl-service:8761/eureka/,http://bs23-ib-rt-discovery-service-statefulset-2.bs23-ib-rt-discovery-service-hl-service:8761/eureka/"
+  EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://discovery-service-statefulset-0.discovery-service-hl-service:8761/eureka/"
   SERVER_PORT: "8080"
   SPRING_PROFILES_ACTIVE: "k8s"
   DEV_HOME: "/tmp/logs"
@@ -95,5 +95,5 @@ resources:
     memory: "500Mi"
     cpu: "1"
   limits:
-    memory: "2Gi"
+    memory: "1Gi"
     cpu: "2"
