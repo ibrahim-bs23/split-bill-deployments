@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: alpha-splitbill-discovery-service-build-configmap
+  name: alpha-splitbill-split-bill-user-service-build-configmap
   namespace: cicd
 data:
   BP_OPENTELEMETRY_ENABLED: "true"
@@ -11,7 +11,7 @@ data:
 apiVersion: argoproj.io/v1alpha1
 kind: WorkflowTemplate
 metadata:
-  name: alpha-splitbill-discovery-service-build-configmap
+  name: alpha-splitbill-split-bill-user-service-build-configmap
   namespace: cicd
 spec:
   entrypoint: main
@@ -36,25 +36,25 @@ spec:
                 - name: project
                   value: "splitbill"
                 - name: namespace
-                  value: "splitbill"
+                  value: "alpha-splitbill"
                 - name: image-tag
                   value: "alpha"
                 - name: source-repo-host
-                  value: "https://github.com"
+                  value: "https://github.com/"
                 - name: source-repo-org
                   value: "ibrahim-bs23"
                 - name: source-repo-name
-                  value: "discovery-service"
+                  value: "split-bill-user-service"
                 - name: source-repo-branch
                   value: "alpha"
                 - name: builder
                   value: "java-app-builder-jammy-base-default"
                 - name: deployment-repo-host
-                  value: "https://github.com"
+                  value: "https://github.com/"
                 - name: deployment-repo-org
                   value: "ibrahim-bs23"
                 - name: deployment-repo-name
-                  value: "split-bill-deployments"
+                  value: "split-bill-user-service"
                 - name: deployment-repo-branch
                   value: "alpha"
                 - name: deployment-repo-credentials-secret
