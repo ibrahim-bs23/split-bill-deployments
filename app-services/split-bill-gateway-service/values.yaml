@@ -30,7 +30,7 @@ config:
   REDIS_HOST: "rfrm-splitbill-redis"
   REDIS_PORT: "6379"
   REDIS_PASSWORD: ""
-  REDIS_DATABASE_INDEX: "14"
+  REDIS_DATABASE_INDEX: "0"
   CURRENT_SCHEMA: "gateway_customer_service"
   MASTER_DB_URL: "jdbc:postgresql://splitbill-psql:5432/splitbill?currentSchema=gateway_customer_service;encrypt=false;trustServerCertificate=false"
   SERVICE_NAME: "gateway-customer"
