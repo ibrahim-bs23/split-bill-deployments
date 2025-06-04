@@ -1,0 +1,48 @@
+apiVersion: opentelemetry.io/v1beta1
+kind: OpenTelemetryCollector
+metadata:
+  name: otelcollector
+spec:
+  mode: deployment
+  config:
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+          http:
+            endpoint: 0.0.0.0:4318
+
+    processors:
+      resource:
+        attributes:
+          - key: service.namespace
+            value: "splitbill"
+            action: insert
+
+    exporters:
+      otlp:
+        endpoint: http://tempo-distributor.tempo:4317
+        tls:
+          insecure: true
+      otlphttp/logs:
+        endpoint: http://loki-distributor.loki:3100/otlp
+        tls:
+          insecure: true
+      prometheusremotewrite:
+        endpoint: http://prometheus-k8s.monitoring:9090/api/v1/write
+        tls:
+          insecure: true
+
+    service:
+      pipelines:
+        traces:
+          receivers: [otlp]
+          exporters: [otlp]
+        metrics:
+          receivers: [otlp]
+          exporters: [prometheusremotewrite]
+        logs:
+          receivers: [otlp]
+          processors: [resource]
+          exporters: [otlphttp/logs]

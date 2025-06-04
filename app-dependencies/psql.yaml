@@ -1,0 +1,40 @@
+apiVersion: "acid.zalan.do/v1"
+kind: postgresql
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+  name: splitbill-psql
+  labels:
+    application: splitbill
+    team: developer
+spec:
+  teamId: "developer"
+  numberOfInstances: 1
+  users:
+    zalando:
+      - superuser
+      - createdb
+  enableMasterLoadBalancer: false
+  enableReplicaLoadBalancer: false
+  enableConnectionPooler: false
+  enableReplicaConnectionPooler: false
+  enableMasterPoolerLoadBalancer: false
+  enableReplicaPoolerLoadBalancer: false
+  allowedSourceRanges:
+    - 0.0.0.0/0
+  databases:
+    splitbill: zalando
+  postgresql:
+    version: "17"
+  volume:
+    size: 5Gi
+    storageClass: openebs-hostpath-home
+  enableShmVolume: false
+  podPriorityClassName: "dependencies-essential-storage"
+  resources:
+    requests:
+      cpu: 500m
+      memory: 500Mi
+    limits:
+      cpu: 2000m
+      memory: 2000Mi

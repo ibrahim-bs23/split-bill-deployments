@@ -1,0 +1,33 @@
+apiVersion: databases.spotahome.com/v1
+kind: RedisFailover
+metadata:
+  name: splitbill-redis
+spec:
+  sentinel:
+    priorityClassName: cluster-critical-storage
+    replicas: 3
+    resources:
+      requests:
+        cpu: 100m
+      limits:
+        memory: 100Mi
+  redis:
+    priorityClassName: dependencies-essential-storage
+    replicas: 2
+    storage:
+      persistentVolumeClaim:
+        metadata:
+          name: splitbill-redis-data
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1Gi
+    resources:
+      requests:
+        cpu: 100m
+        memory: 100Mi
+      limits:
+        cpu: 400m
+        memory: 2Gi
