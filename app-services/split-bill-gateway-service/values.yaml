@@ -1,0 +1,86 @@
+replicaCount: 1
+
+kind: Deployment
+
+image:
+  repository: harbor.local.fintech23.xyz/splitbill/split-bill-gateway-service
+  pullPolicy: Always
+  tag: "alpha"
+
+imagePullSecrets:
+  - harbor-local-fintech23-xyz-image-pull-secrets
+
+config:
+  SERVER_PORT: "8080"
+  SPRING_PROFILES_ACTIVE: "k8s"
+  DEV_HOME: "/tmp/logs"
+  LOG_MAX_FILESIZE: "100MB"
+  LOG_MAX_FILECOUNT: "6"
+  TZ: "Asia/Dhaka"
+  OTEL_JAVAAGENT_ENABLED: "true"
+  OTEL_SERVICE_NAME: "split-bill-gateway-service"
+  OTEL_TRACES_SAMPLER: "always_on"
+  OTEL_TRACES_EXPORTER: "otlp"
+  OTEL_METRICS_EXPORTER: "otlp"
+  OTEL_LOGS_EXPORTER: "otlp"
+  OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
+  OTEL_EXPORTER_OTLP_ENDPOINT: "http://otelcollector-collector:4317"
+  DB_TYPE: "sql_server"
+  DISCOVERY_SERVER_URI: "http://split-bill-gateway-service-statefulset-0.split-bill-gateway-service-hl-service:8761/eureka/,http://split-bill-gateway-service-statefulset-1.split-bill-gateway-service-hl-service:8761/eureka/,http://split-bill-gateway-service-statefulset-2.split-bill-gateway-service-hl-service:8761/eureka/"
+  MASTER_R2DBC_USER: "ibdbadmin"
+  REDIS_HOST: "absolute-newt-26689.upstash.io"
+  REDIS_PORT: "6379"
+  REDIS_PASSWORD: "AWhBAAIjcDE3NmZlZGU0ZGFmZGI0MmE5YmFlYTE3NzNhNTcwYjEyZnAxMA"
+  REDIS_DATABASE_INDEX: "14"
+  CURRENT_SCHEMA: "gateway_customer_service"
+  MASTER_DB_URL: "jdbc:postgresql://ep-divine-resonance-a12pm9wr-pooler.ap-southeast-1.aws.neon.tech:5432/neondb?currentSchema=gateway_customer_service"
+  SERVICE_NAME: "gateway-customer"
+  MASTER_DB_PASSWORD: "DB@HmvlxpneZNFsOiDOUt4tZLiG5T8NUCOzdhoV5K9TroDgxAxVFyDjfxjKEwzS4MFl"
+  DATABASE_TYPE: "postgresql"
+  DATABASE_DIALECT: "org.hibernate.dialect.PostgreSQLDialect"
+
+service:
+  - name: api
+    type: ClusterIP
+    targetPort: 8080
+    port: 80
+
+liveness:
+  enabled: true
+  method: http
+  service: api
+  path: "/actuator/health/liveness"
+  initialDelaySeconds: 90
+  periodSeconds: 10
+
+readiness:
+  enabled: true
+  method: http
+  service: api
+  path: "/actuator/health/readiness"
+  initialDelaySeconds: 90
+  periodSeconds: 60
+
+resources:
+  requests:
+    memory: "500Mi"
+    cpu: "1"
+  limits:
+    memory: "2Gi"
+    cpu: "2"
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    cert-manager.io/cluster-issuer: cloudflare-clusterissuer
+  hosts:
+    - host: qa-abbl-gateway.global.fintech23.xyz
+      paths:
+        - path: /
+          pathType: Prefix
+          service: api
+  tls:
+    - secretName: qa-abbl-gateway-global-fintech23-xyz-cert-secret
+      hosts:
+        - qa-abbl-gateway.global.fintech23.xyz

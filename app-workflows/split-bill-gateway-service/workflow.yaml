@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alpha-splitbill-split-bill-gateway-service-build-configmap
+  namespace: cicd
+data:
+  BP_OPENTELEMETRY_ENABLED: "true"
+  BP_JVM_VERSION: "17"
+  BP_MAVEN_BUILD_ARGUMENTS: "--batch-mode -Dmaven.test.skip=true -X package"
+---
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: alpha-splitbill-split-bill-gateway-service-workflow
+  namespace: cicd
+spec:
+  entrypoint: main
+  volumeClaimTemplates:
+    - metadata:
+        name: workspace-pvc
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi
+        storageClassName: openebs-hostpath-home
+  templates:
+    - name: main
+      steps:
+        - - name: checkout-build-deploy
+            templateRef:
+              name: packeto-buildpack-helm-deploy-template
+              template: workflow-steps
+            arguments:
+              parameters:
+                - name: project
+                  value: "splitbill"
+                - name: namespace
+                  value: "splitbill"
+                - name: image-tag
+                  value: "alpha"
+                - name: source-repo-host
+                  value: "https://github.com"
+                - name: source-repo-org
+                  value: "ibrahim-bs23"
+                - name: source-repo-name
+                  value: "split-bill-gateway-service"
+                - name: source-repo-branch
+                  value: "alpha"
+                - name: builder
+                  value: "java-app-builder-jammy-base-default"
+                - name: deployment-repo-host
+                  value: "https://github.com"
+                - name: deployment-repo-org
+                  value: "ibrahim-bs23"
+                - name: deployment-repo-name
+                  value: "split-bill-deployments"
+                - name: deployment-repo-branch
+                  value: "alpha"
+                - name: deployment-repo-credentials-secret
+                  value: "github-splitbill-credentials"
+                - name: deployment-chart
+                  value: "https://noman5237.github.io/onechart"
+                - name: deployment-chart-version
+                  value: "0.3.1"
