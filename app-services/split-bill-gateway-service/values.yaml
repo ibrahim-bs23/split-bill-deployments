@@ -12,7 +12,7 @@ imagePullSecrets:
 
 config:
   SERVER_PORT: "8080"
-  SPRING_PROFILES_ACTIVE: "k8s"
+  SPRING_ACTIVE_PROFILE: "k8s"
   DEV_HOME: "/tmp/logs"
   LOG_MAX_FILESIZE: "100MB"
   LOG_MAX_FILECOUNT: "6"
@@ -25,19 +25,19 @@ config:
   OTEL_LOGS_EXPORTER: "otlp"
   OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
   OTEL_EXPORTER_OTLP_ENDPOINT: "http://otelcollector-collector:4317"
-  DB_TYPE: "sql_server"
-  DISCOVERY_SERVER_URI: "http://split-bill-gateway-service-statefulset-0.split-bill-gateway-service-hl-service:8761/eureka/,http://split-bill-gateway-service-statefulset-1.split-bill-gateway-service-hl-service:8761/eureka/,http://split-bill-gateway-service-statefulset-2.split-bill-gateway-service-hl-service:8761/eureka/"
+  DISCOVERY_SERVER_URI: "http://discovery-service-statefulset-0.discovery-service-hl-service:8761/eureka/"
   MASTER_R2DBC_USER: "ibdbadmin"
-  REDIS_HOST: "absolute-newt-26689.upstash.io"
+  REDIS_HOST: "rfrm-splitbill-redis"
   REDIS_PORT: "6379"
-  REDIS_PASSWORD: "AWhBAAIjcDE3NmZlZGU0ZGFmZGI0MmE5YmFlYTE3NzNhNTcwYjEyZnAxMA"
+  REDIS_PASSWORD: ""
   REDIS_DATABASE_INDEX: "14"
   CURRENT_SCHEMA: "gateway_customer_service"
-  MASTER_DB_URL: "jdbc:postgresql://ep-divine-resonance-a12pm9wr-pooler.ap-southeast-1.aws.neon.tech:5432/neondb?currentSchema=gateway_customer_service"
+  MASTER_DB_URL: "jdbc:postgresql://splitbill-psql:5432/splitbill?currentSchema=gateway_customer_service;encrypt=false;trustServerCertificate=false"
   SERVICE_NAME: "gateway-customer"
-  MASTER_DB_PASSWORD: "DB@HmvlxpneZNFsOiDOUt4tZLiG5T8NUCOzdhoV5K9TroDgxAxVFyDjfxjKEwzS4MFl"
   DATABASE_TYPE: "postgresql"
   DATABASE_DIALECT: "org.hibernate.dialect.PostgreSQLDialect"
+  MASTER_DB_USER: "zalando"
+  MASTER_DB_PASSWORD: "HmvlxpneZNFsOiDOUt4tZLiG5T8NUCOzdhoV5K9TroDgxAxVFyDjfxjKEwzS4MFl"
 
 service:
   - name: api
@@ -75,12 +75,12 @@ ingress:
   annotations:
     cert-manager.io/cluster-issuer: cloudflare-clusterissuer
   hosts:
-    - host: qa-abbl-gateway.global.fintech23.xyz
+    - host: alpha-splitbill-gateway.global.fintech23.xyz
       paths:
         - path: /
           pathType: Prefix
           service: api
   tls:
-    - secretName: qa-abbl-gateway-global-fintech23-xyz-cert-secret
+    - secretName: alpha-splitbill-gateway-global-fintech23-xyz-cert-secret
       hosts:
-        - qa-abbl-gateway.global.fintech23.xyz
+        - alpha-splitbill-gateway.global.fintech23.xyz
