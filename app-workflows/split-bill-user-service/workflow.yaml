@@ -38,9 +38,9 @@ spec:
                 - name: namespace
                   value: "alpha-splitbill"
                 - name: image-tag
-                  value: "alpha"
+                  value: "splitbill"
                 - name: source-repo-host
-                  value: "https://github.com/"
+                  value: "https://github.com"
                 - name: source-repo-org
                   value: "ibrahim-bs23"
                 - name: source-repo-name
@@ -50,11 +50,11 @@ spec:
                 - name: builder
                   value: "java-app-builder-jammy-base-default"
                 - name: deployment-repo-host
-                  value: "https://github.com/"
+                  value: "https://github.com"
                 - name: deployment-repo-org
                   value: "ibrahim-bs23"
                 - name: deployment-repo-name
-                  value: "split-bill-user-service"
+                  value: "split-bill-deployments"
                 - name: deployment-repo-branch
                   value: "alpha"
                 - name: deployment-repo-credentials-secret
